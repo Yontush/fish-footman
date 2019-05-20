@@ -6,6 +6,7 @@ const path = require('path')
 const _ = require('lodash')
 const { prTrigger, issueTrigger } = require('./src/config')
 const { getFishyDirs, getPullRequests, createStatus } = require('./src/lib')
+
 const limitMerge = async context =>
   Promise.all([
     getFishyDirs(context),
