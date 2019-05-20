@@ -7,6 +7,8 @@ const _ = require('lodash')
 const { prTrigger, issueTrigger } = require('./src/config')
 const { getFishyDirs, getPullRequests, createStatus } = require('./src/lib')
 
+const fs = require('fs')
+
 const limitMerge = async context =>
   Promise.all([
     getFishyDirs(context),
@@ -34,6 +36,14 @@ const limitMerge = async context =>
 
 module.exports = app => {
   app.log('fish footman is running!')
-  app.on('issues', limitMerge)
-  app.on('pull_request', limitMerge)
+
+  app.on('issues', async (context) => {
+    context.github.paginate(
+      context.github.pullRequests.list(context.repo({ state: 'open' })),
+      ({data}) => data
+    ).then((res) => fs.writeFileSync('test/fixtures/open-prs-list.json', JSON.stringify(res, null, 2)))
+  })
+
+  //app.on('issues', limitMerge)
+  //app.on('pull_request', limitMerge)
 }

@@ -8,6 +8,7 @@ module.exports = {
 			labels: labelName
 		})
 	).then(({data}) => _.chain(data)
+		.tap(console.log)
 		.map(({body}) => body.split('\r\n'))
 		.flatten()
 		.uniq()
