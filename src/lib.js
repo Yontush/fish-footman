@@ -19,15 +19,16 @@ module.exports = {
 	getPullRequests: async (context) => context.github.paginate(
 		context.github.pullRequests.list(context.repo({ state: 'open' })),
 		({data}) => data
-	),
+	).then(res => _.flatten(res)),
 
 	createStatus: async (context,
+		sha = context.payload.pull_request.head.sha,
 		state = 'pending',
 		status = { name: statusName, descr: statusDescription }
 	) => context.github.repos.createStatus(
 		context.repo({
 			context: status.name,
-			sha: context.payload.pull_request.head.sha,
+			sha,
 			state,
 			description: status.descr
 		})

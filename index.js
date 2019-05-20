@@ -2,31 +2,37 @@
  * This is the main entrypoint to your Probot app
  * @param {import('probot').Application} app
  */
+const path = require('path')
 const _ = require('lodash')
 const { prTrigger, issueTrigger } = require('./src/config')
-const { getPullRequests, createStatus } = require('./src/lib')
+const { getFishyDirs, getPullRequests, createStatus } = require('./src/lib')
+const limitMerge = async context =>
+  Promise.all([
+    getFishyDirs(context),
+    getPullRequests(context)
+      .then(prs => Promise.all(prs.map(async ({number, head: {sha}}) =>
+        createStatus(context, sha)
+        .then(() =>
+          context.github.paginate(
+            context.github.pullRequests.listFiles(context.repo({ number })),
+            (files) => [number, sha, files.data.map(({filename}) => filename)]
+          )
+        )
+      )))
+  ])
+  .then(([restrictedDirs, prs]) => Promise.all(prs.map(async ([number, sha, files]) => createStatus(
+      context,
+      sha,
+      _.intersectionWith(
+        files,
+        restrictedDirs,
+        (file, dir) => file.startsWith(dir)
+      ).length > 0 ? 'failure' : 'success'
+    ))
+  ))
 
 module.exports = app => {
   app.log('fish footman is running!')
-  app.on('issues', async context =>
-    getPullRequests(context)
-    //.then(res => console.log(res.map(res => res.number)))
-    .then(prs => Promise.all(prs.map(async ({number}) =>
-       context.github.paginate(
-         context.github.pullRequests.listFiles(context.repo({ number})),
-         (res) => res.data
-       )
-    )))
-    .then(res => console.log(res))
-  )
-  // app.on('pull_request', async context =>
-  //   context.payload.action in prTrigger ?
-  //   getFishyIssues(context)
-  //     .then((res) => )
-  //      :
-  //     app.log(`ignored PR action: ${context.payload.action}`)
-  // )
-
-  // app.on('issues', async context => context.payload.action in issueTrigger ? app.log(`issue action: ${context.payload.action}`) : app.log(`ignored issue action: ${context.payload.action}`))
-
+  app.on('issues', limitMerge)
+  app.on('pull_request', limitMerge)
 }
