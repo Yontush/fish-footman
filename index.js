@@ -9,7 +9,7 @@ const { getFishyDirs, getPullRequests, createStatus } = require('./src/lib')
 
 const fs = require('fs')
 
-const limitMerge = async context =>
+const limitMerge = context =>
   Promise.all([
     getFishyDirs(context),
     getPullRequests(context)
@@ -37,13 +37,15 @@ const limitMerge = async context =>
 module.exports = app => {
   app.log('fish footman is running!')
 
-  app.on('issues', async (context) => {
-    context.github.paginate(
-      context.github.pullRequests.list(context.repo({ state: 'open' })),
-      ({data}) => data
-    ).then((res) => fs.writeFileSync('test/fixtures/open-prs-list.json', JSON.stringify(res, null, 2)))
-  })
+  // app.on('issues', async (context) => {
+  //   context.github.issues.listForRepo(
+  //     context.repo({
+  //       sstate: 'open',
+  //       labels: 'Fishy'
+  //     })
+  //   ).then((res) => fs.writeFileSync('test/fixtures/fishy-issues-list.json', JSON.stringify(res, null, 2)))
+  // })
 
-  //app.on('issues', limitMerge)
+  app.on('issues', limitMerge)
   //app.on('pull_request', limitMerge)
 }

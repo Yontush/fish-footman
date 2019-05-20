@@ -9,7 +9,7 @@ const fixtures = {
   prCreated: require('./fixtures/fishy-pr'),
   prFiles: require('./fixtures/fishy-pr-files'),
   prUpdated: require('./fixtures/no-longer-fishy-pr'),
-  fishyIssues: require('./fixtures/fishy-issues-list')
+  fishyIssues: require('./fixtures/fishy-issues-list'),
   openPrs: require('./fixtures/open-prs-list')
 }
 
@@ -25,16 +25,40 @@ describe('fish footman', () => {
     nock('https://api.github.com')
       .post('/app/installations/1006543/access_tokens')
       .reply(200, { token: 'test' })
-  })
+  }, 10000)
 
   test('when a fishy issue is created prs that touch fishy paths with be blocked', async () => {
     nock('https://api.github.com')
+      .log(console.log)
+      .on('error', function(err){
+          console.log(err);
+      })
       .get('/repos/LeonFedotov/fish-footman/issues?state=open&labels=Fishy')
       .reply(200, fixtures.fishyIssues)
-    nock('https://api.github.com')
       .get('/repos/LeonFedotov/fish-footman/pulls?state=open')
       .reply(200, fixtures.openPrs)
-    await probot.receive({ name: 'issues', payload: fixtures.issueCreated })
+      .post(
+        '/repos/LeonFedotov/fish-footman/statuses/a7c2e132b30d225509f71123f3bc26a3d1754fae'
+
+      )
+      .reply(200)
+      .get('/repos/LeonFedotov/fish-footman/pulls/10/files')
+      .reply(200, fixtures.prFiles)
+      .post(
+        '/repos/LeonFedotov/fish-footman/statuses/a7c2e132b30d225509f71123f3bc26a3d1754fae',
+        (body) => {
+          expect(body).toMatchObject({
+            context: 'Directory Locks',
+            state: 'failure',
+            description: 'Checking mergeability'
+          })
+          return true
+        }
+      )
+      .reply(200)
+
+
+    return probot.receive({ name: 'issues', payload: fixtures.issueCreated })
   })
 
   xtest('when a pr is created with restricted paths bot will block it', async () => {
