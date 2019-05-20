@@ -13,17 +13,17 @@ const limitMerge = context =>
   Promise.all([
     getFishyDirs(context),
     getPullRequests(context)
-      .then(prs => Promise.all(prs.map(async ({number, head: {sha}}) =>
+      .then(prs => Promise.all(prs.map(({number, head: {sha}}) =>
         createStatus(context, sha)
         .then(() =>
           context.github.paginate(
             context.github.pullRequests.listFiles(context.repo({ number })),
-            (files) => [number, sha, files.data.map(({filename}) => filename)]
+            (files) => [sha, files.data.map(({filename}) => filename)]
           )
         )
       )))
   ])
-  .then(([restrictedDirs, prs]) => Promise.all(prs.map(async ([number, sha, files]) => createStatus(
+  .then(([restrictedDirs, prs]) => Promise.all(prs.map(([sha, files]) => createStatus(
       context,
       sha,
       _.intersectionWith(
@@ -47,5 +47,5 @@ module.exports = app => {
   // })
 
   app.on('issues', limitMerge)
-  //app.on('pull_request', limitMerge)
+  app.on('pull_request', limitMerge)
 }

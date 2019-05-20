@@ -1,5 +1,5 @@
 {
-  "action": "synchronize",
+  "action": "opened",
   "number": 10,
   "pull_request": {
     "url": "https://api.github.com/repos/LeonFedotov/fish-footman/pulls/10",
@@ -35,10 +35,10 @@
     },
     "body": "",
     "created_at": "2019-05-20T15:09:42Z",
-    "updated_at": "2019-05-20T16:02:54Z",
+    "updated_at": "2019-05-20T15:09:42Z",
     "closed_at": null,
     "merged_at": null,
-    "merge_commit_sha": "c8434cde078a47bd7a5a4474290542c89d3dedda",
+    "merge_commit_sha": null,
     "assignee": null,
     "assignees": [
 
@@ -57,11 +57,11 @@
     "review_comments_url": "https://api.github.com/repos/LeonFedotov/fish-footman/pulls/10/comments",
     "review_comment_url": "https://api.github.com/repos/LeonFedotov/fish-footman/pulls/comments{/number}",
     "comments_url": "https://api.github.com/repos/LeonFedotov/fish-footman/issues/10/comments",
-    "statuses_url": "https://api.github.com/repos/LeonFedotov/fish-footman/statuses/611f9a8cdad9ecbc3320d5f40b71d5c0f3d69f7f",
+    "statuses_url": "https://api.github.com/repos/LeonFedotov/fish-footman/statuses/a7c2e132b30d225509f71123f3bc26a3d1754fae",
     "head": {
       "label": "LeonFedotov:tests",
       "ref": "tests",
-      "sha": "611f9a8cdad9ecbc3320d5f40b71d5c0f3d69f7f",
+      "sha": "a7c2e132b30d225509f71123f3bc26a3d1754fae",
       "user": {
         "login": "LeonFedotov",
         "id": 130342,
@@ -150,7 +150,7 @@
         "deployments_url": "https://api.github.com/repos/LeonFedotov/fish-footman/deployments",
         "created_at": "2019-05-20T09:27:39Z",
         "updated_at": "2019-05-20T14:09:56Z",
-        "pushed_at": "2019-05-20T16:02:54Z",
+        "pushed_at": "2019-05-20T15:09:35Z",
         "git_url": "git://github.com/LeonFedotov/fish-footman.git",
         "ssh_url": "git@github.com:LeonFedotov/fish-footman.git",
         "clone_url": "https://github.com/LeonFedotov/fish-footman.git",
@@ -269,7 +269,7 @@
         "deployments_url": "https://api.github.com/repos/LeonFedotov/fish-footman/deployments",
         "created_at": "2019-05-20T09:27:39Z",
         "updated_at": "2019-05-20T14:09:56Z",
-        "pushed_at": "2019-05-20T16:02:54Z",
+        "pushed_at": "2019-05-20T15:09:35Z",
         "git_url": "git://github.com/LeonFedotov/fish-footman.git",
         "ssh_url": "git@github.com:LeonFedotov/fish-footman.git",
         "clone_url": "https://github.com/LeonFedotov/fish-footman.git",
@@ -319,7 +319,7 @@
         "href": "https://api.github.com/repos/LeonFedotov/fish-footman/pulls/10/commits"
       },
       "statuses": {
-        "href": "https://api.github.com/repos/LeonFedotov/fish-footman/statuses/611f9a8cdad9ecbc3320d5f40b71d5c0f3d69f7f"
+        "href": "https://api.github.com/repos/LeonFedotov/fish-footman/statuses/a7c2e132b30d225509f71123f3bc26a3d1754fae"
       }
     },
     "author_association": "OWNER",
@@ -332,13 +332,11 @@
     "comments": 0,
     "review_comments": 0,
     "maintainer_can_modify": false,
-    "commits": 4,
-    "additions": 801,
-    "deletions": 42,
+    "commits": 2,
+    "additions": 332,
+    "deletions": 44,
     "changed_files": 13
   },
-  "before": "3ff5024ed18aefe45b6557eb985d4d12eaab3180",
-  "after": "611f9a8cdad9ecbc3320d5f40b71d5c0f3d69f7f",
   "repository": {
     "id": 187609638,
     "node_id": "MDEwOlJlcG9zaXRvcnkxODc2MDk2Mzg=",
@@ -407,7 +405,7 @@
     "deployments_url": "https://api.github.com/repos/LeonFedotov/fish-footman/deployments",
     "created_at": "2019-05-20T09:27:39Z",
     "updated_at": "2019-05-20T14:09:56Z",
-    "pushed_at": "2019-05-20T16:02:54Z",
+    "pushed_at": "2019-05-20T15:09:35Z",
     "git_url": "git://github.com/LeonFedotov/fish-footman.git",
     "ssh_url": "git@github.com:LeonFedotov/fish-footman.git",
     "clone_url": "https://github.com/LeonFedotov/fish-footman.git",

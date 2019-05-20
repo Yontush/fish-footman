@@ -2,7 +2,7 @@ const _ = require('lodash')
 const path = require('path')
 const {labelName, statusName, statusDescription } = require('./config')
 module.exports = {
-	getFishyDirs: async (context) => context.github.issues.listForRepo(
+	getFishyDirs: (context) => context.github.issues.listForRepo(
 		context.repo({
 			state: 'open',
 			labels: labelName
@@ -16,12 +16,12 @@ module.exports = {
 		.value()
 	),
 
-	getPullRequests: async (context) => context.github.paginate(
+	getPullRequests: (context) => context.github.paginate(
 		context.github.pullRequests.list(context.repo({ state: 'open' })),
 		({data}) => data
 	).then(res => _.flatten(res)),
 
-	createStatus: async (context,
+	createStatus: (context,
 		sha = context.payload.pull_request.head.sha,
 		state = 'pending',
 		status = { name: statusName, descr: statusDescription }
