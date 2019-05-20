@@ -10,18 +10,17 @@ const limitMerge = async context =>
   Promise.all([
     getFishyDirs(context),
     getPullRequests(context)
-      .then(prs => Promise.all(prs.map(async ({number, head: {sha}}) => (
-        createStatus(context, sha),
-        context.github.paginate(
-          context.github.pullRequests.listFiles(context.repo({ number })),
-          (files) => [number, sha, files.data.map(({filename}) => filename)]
+      .then(prs => Promise.all(prs.map(async ({number, head: {sha}}) =>
+        createStatus(context, sha)
+        .then(() =>
+          context.github.paginate(
+            context.github.pullRequests.listFiles(context.repo({ number })),
+            (files) => [number, sha, files.data.map(({filename}) => filename)]
+          )
         )
-      )
       )))
   ])
-  .then((res) => (console.log(res), res))
-  .then(([restrictedDirs, prs]) => Promise.all(prs.map(async ([number, sha, files]) => (console.log(files),
-    createStatus(
+  .then(([restrictedDirs, prs]) => Promise.all(prs.map(async ([number, sha, files]) => createStatus(
       context,
       sha,
       _.intersectionWith(
@@ -30,10 +29,10 @@ const limitMerge = async context =>
         (file, dir) => file.startsWith(dir)
       ).length > 0 ? 'failure' : 'success'
     ))
-  )))
+  ))
 
 module.exports = app => {
   app.log('fish footman is running!')
   app.on('issues', limitMerge)
-  //app.on('pull_request', limitMerge)
+  app.on('pull_request', limitMerge)
 }
