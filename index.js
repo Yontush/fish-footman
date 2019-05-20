@@ -2,18 +2,31 @@
  * This is the main entrypoint to your Probot app
  * @param {import('probot').Application} app
  */
+const _ = require('lodash')
+const { prTrigger, issueTrigger } = require('./src/config')
+const { getPullRequests, createStatus } = require('./src/lib')
+
 module.exports = app => {
-  // Your code here
-  app.log('Yay, the app was loaded!')
+  app.log('fish footman is running!')
+  app.on('issues', async context =>
+    getPullRequests(context)
+    //.then(res => console.log(res.map(res => res.number)))
+    .then(prs => Promise.all(prs.map(async ({number}) =>
+       context.github.paginate(
+         context.github.pullRequests.listFiles(context.repo({ number})),
+         (res) => res.data
+       )
+    )))
+    .then(res => console.log(res))
+  )
+  // app.on('pull_request', async context =>
+  //   context.payload.action in prTrigger ?
+  //   getFishyIssues(context)
+  //     .then((res) => )
+  //      :
+  //     app.log(`ignored PR action: ${context.payload.action}`)
+  // )
 
-  app.on('issues.opened', async context => {
-    const issueComment = context.issue({ body: 'Thanks for opening this issue!' })
-    return context.github.issues.createComment(issueComment)
-  })
+  // app.on('issues', async context => context.payload.action in issueTrigger ? app.log(`issue action: ${context.payload.action}`) : app.log(`ignored issue action: ${context.payload.action}`))
 
-  // For more information on building apps:
-  // https://probot.github.io/docs/
-
-  // To get your app running against GitHub, see:
-  // https://probot.github.io/docs/development/
 }
