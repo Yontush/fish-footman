@@ -6,6 +6,6 @@ A bot that manages directory locks on multiproject repos
 using an issue on a project as config with the label:"**Fishy**" on it, this will trigger the bot, it will parse the issue to find limited directories(each line a directory) and will create an error on all PR's touching those directories,
 if the issue is closed/the pr is updated the bot will re-evaluate the state and will lock/unlock pull requests accordingly.
 
-notes: 
+### Notes: 
   - you can have more than one issue, the bot will merge the directories
   - you need to create the label "Fishy" on the target repo 
