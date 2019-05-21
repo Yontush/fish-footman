@@ -3,6 +3,12 @@ language: node_js
 node_js:
   - "10"
 cache: yarn
-
+    
 notifications:
   disabled: true
+
+deploy:
+  provider: script
+  script: bash scripts/deploy.sh
+  on:
+    branch: master
