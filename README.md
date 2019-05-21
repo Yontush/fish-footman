@@ -1,37 +1,11 @@
-Welcome to Glitch
-=================
+# Fish footman ![build status](https://www.travis-ci.com/LeonFedotov/fish-footman.svg?branch=master)
 
-Click `Show` in the header to see your app live. Updates to your code will instantly deploy and update live.
+![38a87fc0635634f4d5828141447156e2--wonderland-fish](https://user-images.githubusercontent.com/130342/58011498-0de4f700-7afb-11e9-87a1-fc8889a92432.jpg)
 
-**Glitch** is the friendly community where you'll build the app of your dreams. Glitch lets you instantly create, remix, edit, and host an app, bot or site, and you can invite collaborators or helpers to simultaneously edit code with you.
+A bot that manages directory locks on multiproject repos 
+using an issue on a project as config with the label:"**Fishy**" on it, this will trigger the bot, it will parse the issue to find limited directories(each line a directory) and will create an error on all PR's touching those directories,
+if the issue is closed/the pr is updated the bot will re-evaluate the state and will lock/unlock pull requests accordingly.
 
-Find out more [about Glitch](https://glitch.com/about).
-
-
-Your Project
-------------
-
-### ← README.md
-
-That's this file, where you can tell people what your cool website does and how you built it.
-
-### ← index.html
-
-Where you'll write the content of your website. 
-
-### ← style.css
-
-CSS files add styling rules to your content.
-
-### ← script.js
-
-If you're feeling fancy you can add interactivity to your site with JavaScript.
-
-### ← assets
-
-Drag in `assets`, like images or music, to add them to your project
-
-Made by [Glitch](https://glitch.com/)
--------------------
-
-\ ゜o゜)ノ
+### Notes: 
+  - you can have more than one issue, the bot will merge the directories
+  - you need to create the label "Fishy" on the target repo 
