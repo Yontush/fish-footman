@@ -1,6 +1,6 @@
 {
   "name": "fish-footman",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "",
   "author": "Leon Fedotov <leonf@wix.com> (https://leonfedotov.github.io/fish-footman)",
   "license": "UNLICENSED",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.11",
-    "probot": "^7.2.0"
+    "probot": "^9.2.11"
   },
   "devDependencies": {
     "jest": "^24.0.0",
