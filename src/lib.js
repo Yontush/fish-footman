@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const path = require('path')
 const { labelName, statusName, statusDescription } = require('./config')
+
 module.exports = {
   getFishyDirs: (context) => context.github.issues.listForRepo(
     context.repo({
