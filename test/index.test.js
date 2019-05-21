@@ -18,11 +18,9 @@ const fixtures = {
 nock.disableNetConnect()
 
 describe('fish footman', () => {
-  let probot
+  let probot = getProbot(myProbotApp)
 
   beforeEach(() => {
-    probot = getProbot(myProbotApp)
-
     nock('https://api.github.com')
       .on('error', (err) => console.error(err))
       .post('/app/installations/1006543/access_tokens')

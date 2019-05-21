@@ -17,10 +17,17 @@ module.exports = {
     .value()
   ),
 
-  getPullRequests: (context) => context.github.paginate(
+  getOpenPrs: (context) => context.github.paginate(
     context.github.pullRequests.list.endpoint.merge(context.repo({ state: 'open' })),
     ({ data }) => data
   ).then(res => _.flatten(res)),
+
+  getPrFileNames: (context, number) => context.github.paginate(
+    context.github.pullRequests.listFiles.endpoint.merge(
+      context.repo({ pull_number: number })
+    ),
+    (res) => res.data.map(({ filename }) => filename)
+  ),
 
   createStatus: (context,
     sha = context.payload.pull_request.head.sha,
