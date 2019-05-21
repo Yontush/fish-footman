@@ -18,7 +18,7 @@ module.exports = {
   ),
 
   getPullRequests: (context) => context.github.paginate(
-    context.github.pullRequests.list(context.repo({ state: 'open' })),
+    context.github.pullRequests.list.endpoint.merge(context.repo({ state: 'open' })),
     ({ data }) => data
   ).then(res => _.flatten(res)),
 

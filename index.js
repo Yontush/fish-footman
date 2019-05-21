@@ -14,7 +14,7 @@ const limitMerge = context =>
         createStatus(context, sha)
           .then(() =>
             context.github.paginate(
-              context.github.pullRequests.listFiles(context.repo({ number })),
+              context.github.pullRequests.listFiles.endpoint.merge(context.repo({ pull_number: number })),
               (files) => [sha, files.data.map(({ filename }) => filename)]
             )
           )
