@@ -8,7 +8,8 @@ setup_git() {
 
 upload_files() {
   git remote add production https://${GLICH_TOKEN}@api.glitch.com/git/fish-footman > /dev/null 2>&1
-  git push -f --quiet --set-upstream production master 
+  git pull
+  git push --set-upstream production master 
 }
 
 setup_git
