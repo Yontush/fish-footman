@@ -1,12 +1,12 @@
 {
   "name": "fish-footman",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "",
   "author": "Leon Fedotov <leonf@wix.com> (https://leonfedotov.github.io/fish-footman)",
   "license": "UNLICENSED",
-  "repository": "https://github.com/leonfedotov/fish-footman.git",
-  "homepage": "https://github.com/leonfedotov/fish-footman",
-  "bugs": "https://github.com/leonfedotov/fish-footman/issues",
+  "repository": "https://github.com//fish-footman.git",
+  "homepage": "https://github.com//fish-footman",
+  "bugs": "https://github.com//fish-footman/issues",
   "keywords": [
     "probot",
     "github",
@@ -31,7 +31,7 @@
     "standard": "^12.0.1"
   },
   "engines": {
-    "node": "10"
+    "node": ">= 10"
   },
   "standard": {
     "env": [
