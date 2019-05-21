@@ -4,32 +4,25 @@
  */
 
 const _ = require('lodash')
-const { getFishyDirs, getPullRequests, createStatus } = require('./src/lib')
+const { getFishyDirs, getOpenPrs, getPrFileNames, createStatus } = require('./src/lib')
 
-const limitMerge = context =>
-  Promise.all([
-    getFishyDirs(context),
-    getPullRequests(context)
-      .then(prs => Promise.all(prs.map(({ number, head: { sha } }) =>
-        createStatus(context, sha)
-          .then(() =>
-            context.github.paginate(
-              context.github.pullRequests.listFiles(context.repo({ number })),
-              (files) => [sha, files.data.map(({ filename }) => filename)]
-            )
-          )
-      )))
-  ])
-    .then(([restrictedDirs, prs]) => Promise.all(prs.map(([sha, files]) => createStatus(
-      context,
-      sha,
-      _.intersectionWith(
-        files,
-        restrictedDirs,
-        (file, dir) => file.startsWith(dir)
-      ).length > 0 ? 'failure' : 'success'
-    ))
-    ))
+const limitMerge = async context => {
+  const restriction = await getFishyDirs(context)
+  const openPrs = await getOpenPrs(context)
+
+  return Promise.all(openPrs.map(async ({ number, head: { sha } }) => {
+    await createStatus(context, sha, 'pending')
+
+    const files = await getPrFileNames(context, number)
+    const merge = _.intersectionWith(
+      files,
+      restriction,
+      (file, dir) => file.startsWith(dir)
+    ).length > 0
+
+    await createStatus(context, sha, merge ? 'failure' : 'success')
+  }))
+}
 
 module.exports = app => {
   app.log('fish footman is running!')

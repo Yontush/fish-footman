@@ -1,6 +1,7 @@
 const nock = require('nock')
 const myProbotApp = require('..')
-const { Probot } = require('probot')
+
+const getProbot = require('./mocks/probot')
 
 const fixtures = {
   issueCreated: require('./fixtures/fishy-issue-created'),
@@ -17,12 +18,9 @@ const fixtures = {
 nock.disableNetConnect()
 
 describe('fish footman', () => {
-  let probot
+  let probot = getProbot(myProbotApp)
 
   beforeEach(() => {
-    probot = new Probot({})
-    const app = probot.load(myProbotApp)
-    app.app = () => 'test'
     nock('https://api.github.com')
       .on('error', (err) => console.error(err))
       .post('/app/installations/1006543/access_tokens')
@@ -62,7 +60,7 @@ describe('fish footman', () => {
       )
       .reply(200, {})
     await probot.receive({ name: 'issues', payload: fixtures.issueCreated })
-  }, 10000)
+  })
 
   test('when a pr is created with restricted paths bot will block it', async () => {
     nock('https://api.github.com')
@@ -95,7 +93,7 @@ describe('fish footman', () => {
       )
       .reply(200, {})
     await probot.receive({ name: 'pull_request', payload: fixtures.prCreated })
-  }, 10000)
+  })
 
   test('when a pr is changed to not touch restricted paths pr is unlocked', async () => {
     nock('https://api.github.com')
@@ -128,7 +126,7 @@ describe('fish footman', () => {
       )
       .reply(200, {})
     await probot.receive({ name: 'pull_request', payload: fixtures.prUpdated })
-  }, 10000)
+  })
 
   test('when a fishy issue is closed affected prs are unlocked', async () => {
     nock('https://api.github.com')
@@ -161,7 +159,7 @@ describe('fish footman', () => {
       )
       .reply(200, {})
     await probot.receive({ name: 'issues', payload: fixtures.issueClosed })
-  }, 10000)
+  })
 
   test('when a fishy issue is edited affected prs are updated', async () => {
     nock('https://api.github.com')
