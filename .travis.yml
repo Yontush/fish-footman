@@ -8,6 +8,7 @@ notifications:
   disabled: true
 
 deploy:
+  provider: script
   script: npx sync-glitch-cli
   on:
     branch: master
