@@ -40,20 +40,5 @@ module.exports = {
       state,
       description: status.descr
     })
-  ),
-
-  paginate: async (context, query, params = { cursor: '' }) => {
-    const { repository: { result: {nodes, pageInfo} } } = await context.github.query(query, context.repo(params))
-    return pageInfo.hasNextPage ?
-      nodes.concat(await paginate(context, query, {...params, cursor: pageInfo.endCursor })) :
-      nodes
-  },
-
-  paginateFiles: async (context, query, params = { cursor: '' }) {
-    const { repository: { result: { files: { result: {nodes, pageInfo} } } } } = await context.github.query(query, context.repo(params))
-
-    return pageInfo.hasNextPage ?
-      nodes.concat(paginate(context, query, {...params, cursor: pageInfo.endCursor })) :
-      nodes
-  }
+  )
 }
