@@ -61,18 +61,19 @@ module.exports = async (context) => {
 
   for await (const pr of pullrequests(context)) {
     context.log(`Validating PR #${pr.number}`)
-    validate: {
-      await createStatus(context, pr.sha, 'pending')
-      for await (const file of pr.files) {
-        if (restrictions.some((dir) => file.startsWith(dir))) {
-          context.log(`PR #${pr.number} invalid`)
-          await createStatus(context, pr.sha, 'failure')
-          break validate
-        }
-        context.log(`.`)
+    let valid = true
+    await createStatus(context, pr.sha, 'pending')
+    for await (const file of pr.files) {
+      if (restrictions.some((dir) => file.startsWith(dir))) {
+        context.log(`PR #${pr.number} invalid`)
+        await createStatus(context, pr.sha, 'failure')
+        valid = false
+        break;
       }
-      context.log(`PR #${pr.number} valid`)
-      await createStatus(context, pr.sha, 'success')
+      context.log(`.`)
     }
+    valid && context.log(`PR #${pr.number} valid`)
+    valid && await createStatus(context, pr.sha, 'success')
+
   }
 }
