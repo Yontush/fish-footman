@@ -68,12 +68,11 @@ module.exports = async (context) => {
         context.log(`PR #${pr.number} invalid`)
         await createStatus(context, pr.sha, 'failure')
         valid = false
-        break;
+        break
       }
       context.log(`.`)
     }
     valid && context.log(`PR #${pr.number} valid`)
     valid && await createStatus(context, pr.sha, 'success')
-
   }
 }
