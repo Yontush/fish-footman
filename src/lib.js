@@ -1,34 +1,33 @@
 const _ = require('lodash')
 const path = require('path')
 const { labelName, statusName, statusDescription } = require('./config')
+const { getIssues, getPrs, getFiles } = require('./queries')
+
+const fishyNodes = async (
+  context,
+  params = context.repo({ label: labelName })
+) => context.github
+  .graphql(getIssues, params)
+  .then(async ({ repository: { result: { nodes, pageInfo: { hasNextPage, endCursor: cursor } } } }) =>
+    hasNextPage
+      ? nodes.concat(await fishyNodes(context, { ...params, cursor }))
+      : nodes
+  )
+
+async function * filesPage (context, number, { pageInfo: { hasNextPage: nextPage, cursor }, nodes }) {
+  yield * nodes.map(({ path }) => path)
+
+  while (nextPage) {
+    const { hasNextPage, endCursor, nodes } = await context.github
+      .graphql(getFiles, context.repo({ number, cursor }))
+      .then(({ repository: { result: { nodes, pageInfo: { hasNextPage, endCursor } } } }) => ({ hasNextPage, endCursor, nodes }))
+    nextPage = hasNextPage
+    cursor = endCursor
+    yield * nodes.map(({ path }) => path)
+  }
+}
 
 module.exports = {
-  getFishyDirs: (context) => context.github.issues.listForRepo(
-    context.repo({
-      state: 'open',
-      labels: labelName
-    })
-  ).then(({ data }) => _.chain(data)
-    .map(({ body }) => body.split('\r\n'))
-    .flatten()
-    .uniq()
-    .compact()
-    .map((dir) => path.normalize(dir))
-    .value()
-  ),
-
-  getOpenPrs: (context) => context.github.paginate(
-    context.github.pullRequests.list.endpoint.merge(context.repo({ state: 'open' })),
-    ({ data }) => data
-  ).then(res => _.flatten(res)),
-
-  getPrFileNames: (context, number) => context.github.paginate(
-    context.github.pullRequests.listFiles.endpoint.merge(
-      context.repo({ pull_number: number })
-    ),
-    (res) => res.data.map(({ filename }) => filename)
-  ),
-
   createStatus: (context,
     sha = context.payload.pull_request.head.sha,
     state = 'pending',
@@ -40,5 +39,32 @@ module.exports = {
       state,
       description: status.descr
     })
-  )
+  ),
+
+  restrictedDirs: (context) => fishyNodes(context)
+    .then(nodes => _.chain(nodes)
+      .map(({ body }) => body.split('\r\n'))
+      .flatten()
+      .uniq()
+      .compact()
+      .map((dir) => path.normalize(dir))
+      .value()
+    )
+  ,
+
+  pullrequests: async function * pullrequests (context) {
+    let nextPage = true
+    let cursor = null
+
+    while (nextPage) {
+      const { hasNextPage, endCursor, nodes } = await context.github
+        .graphql(getPrs, context.repo({ cursor }))
+        .then(({ repository: { result: { nodes, pageInfo: { hasNextPage, endCursor } } } }) => ({ hasNextPage, endCursor, nodes }))
+
+      nextPage = hasNextPage
+      cursor = endCursor
+
+      yield * nodes.map(({ files: nodes, sha, number }) => ({ sha, number, files: filesPage(context, number, nodes) }))
+    }
+  }
 }
