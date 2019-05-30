@@ -1,147 +1,29 @@
-[
-  {
-    "sha": "11a31f44b51cbfb3aa52dbfcdac0f483d71456c4",
-    "filename": "index.js",
-    "status": "modified",
-    "additions": 13,
-    "deletions": 2,
-    "changes": 15,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/a7c2e132b30d225509f71123f3bc26a3d1754fae/index.js",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/a7c2e132b30d225509f71123f3bc26a3d1754fae/index.js",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/index.js?ref=a7c2e132b30d225509f71123f3bc26a3d1754fae",
-    "patch": "@@ -6,6 +6,9 @@ const path = require('path')\n const _ = require('lodash')\n const { prTrigger, issueTrigger } = require('./src/config')\n const { getFishyDirs, getPullRequests, createStatus } = require('./src/lib')\n+\n+const fs = require('fs')\n+\n const limitMerge = async context =>\n   Promise.all([\n     getFishyDirs(context),\n@@ -33,6 +36,14 @@ const limitMerge = async context =>\n \n module.exports = app => {\n   app.log('fish footman is running!')\n-  app.on('issues', limitMerge)\n-  app.on('pull_request', limitMerge)\n+\n+  app.on('issues', async (context) => {\n+    context.github.paginate(\n+      context.github.pullRequests.list(context.repo({ state: 'open' })),\n+      ({data}) => data\n+    ).then((res) => fs.writeFileSync('test/fixtures/open-prs-list.json', JSON.stringify(res, null, 2)))\n+  })\n+\n+  //app.on('issues', limitMerge)\n+  //app.on('pull_request', limitMerge)\n }"
-  },
-  {
-    "sha": "a1c51feb53a06b44702a1a34e211093eccf1308f",
-    "filename": "package.json",
-    "status": "modified",
-    "additions": 1,
-    "deletions": 1,
-    "changes": 2,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/a7c2e132b30d225509f71123f3bc26a3d1754fae/package.json",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/a7c2e132b30d225509f71123f3bc26a3d1754fae/package.json",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/package.json?ref=a7c2e132b30d225509f71123f3bc26a3d1754fae",
-    "patch": "@@ -16,7 +16,7 @@\n     \"dev\": \"nodemon\",\n     \"start\": \"probot run ./index.js\",\n     \"lint\": \"standard --fix\",\n-    \"test\": \"jest && standard\",\n+    \"test\": \"jest\",\n     \"test:watch\": \"jest --watch --notify --notifyMode=change --coverage\"\n   },\n   \"dependencies\": {"
-  },
-  {
-    "sha": "517be06f65919dffe0a2f27a648f56632662e36a",
-    "filename": "src/lib.js",
-    "status": "modified",
-    "additions": 1,
-    "deletions": 0,
-    "changes": 1,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/a7c2e132b30d225509f71123f3bc26a3d1754fae/src/lib.js",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/a7c2e132b30d225509f71123f3bc26a3d1754fae/src/lib.js",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/src/lib.js?ref=a7c2e132b30d225509f71123f3bc26a3d1754fae",
-    "patch": "@@ -8,6 +8,7 @@ module.exports = {\n \t\t\tlabels: labelName\n \t\t})\n \t).then(({data}) => _.chain(data)\n+\t\t.tap(console.log)\n \t\t.map(({body}) => body.split('\\r\\n'))\n \t\t.flatten()\n \t\t.uniq()"
-  },
-  {
-    "sha": "0967ef424bce6791893e9a57bb952f80fd536e93",
-    "filename": "test/fixtures/fishy-issue-closed.json",
-    "status": "added",
-    "additions": 1,
-    "deletions": 0,
-    "changes": 1,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-issue-closed.json",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-issue-closed.json",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/test/fixtures/fishy-issue-closed.json?ref=a7c2e132b30d225509f71123f3bc26a3d1754fae",
-    "patch": "@@ -0,0 +1 @@\n+{}"
-  },
-  {
-    "sha": "9ce0e46b1634f97b61f535381ea7f22bdd8bbf45",
-    "filename": "test/fixtures/fishy-issue-created.json",
-    "status": "added",
-    "additions": 176,
-    "deletions": 0,
-    "changes": 176,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-issue-created.json",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-issue-created.json",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/test/fixtures/fishy-issue-created.json?ref=a7c2e132b30d225509f71123f3bc26a3d1754fae",
-    "patch": "@@ -0,0 +1,176 @@\n+{\n+  \"action\": \"opened\",\n+  \"issue\": {\n+    \"url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues/9\",\n+    \"repository_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman\",\n+    \"labels_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues/9/labels{/name}\",\n+    \"comments_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues/9/comments\",\n+    \"events_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues/9/events\",\n+    \"html_url\": \"https://github.com/LeonFedotov/fish-footman/issues/9\",\n+    \"id\": 446154008,\n+    \"node_id\": \"MDU6SXNzdWU0NDYxNTQwMDg=\",\n+    \"number\": 9,\n+    \"title\": \"Restrict commits to docs\",\n+    \"user\": {\n+      \"login\": \"LeonFedotov\",\n+      \"id\": 130342,\n+      \"node_id\": \"MDQ6VXNlcjEzMDM0Mg==\",\n+      \"avatar_url\": \"https://avatars3.githubusercontent.com/u/130342?v=4\",\n+      \"gravatar_id\": \"\",\n+      \"url\": \"https://api.github.com/users/LeonFedotov\",\n+      \"html_url\": \"https://github.com/LeonFedotov\",\n+      \"followers_url\": \"https://api.github.com/users/LeonFedotov/followers\",\n+      \"following_url\": \"https://api.github.com/users/LeonFedotov/following{/other_user}\",\n+      \"gists_url\": \"https://api.github.com/users/LeonFedotov/gists{/gist_id}\",\n+      \"starred_url\": \"https://api.github.com/users/LeonFedotov/starred{/owner}{/repo}\",\n+      \"subscriptions_url\": \"https://api.github.com/users/LeonFedotov/subscriptions\",\n+      \"organizations_url\": \"https://api.github.com/users/LeonFedotov/orgs\",\n+      \"repos_url\": \"https://api.github.com/users/LeonFedotov/repos\",\n+      \"events_url\": \"https://api.github.com/users/LeonFedotov/events{/privacy}\",\n+      \"received_events_url\": \"https://api.github.com/users/LeonFedotov/received_events\",\n+      \"type\": \"User\",\n+      \"site_admin\": false\n+    },\n+    \"labels\": [\n+      {\n+        \"id\": 1369143763,\n+        \"node_id\": \"MDU6TGFiZWwxMzY5MTQzNzYz\",\n+        \"url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/labels/Fishy\",\n+        \"name\": \"Fishy\",\n+        \"color\": \"8edb5e\",\n+        \"default\": false\n+      }\n+    ],\n+    \"state\": \"open\",\n+    \"locked\": false,\n+    \"assignee\": null,\n+    \"assignees\": [\n+\n+    ],\n+    \"milestone\": null,\n+    \"comments\": 0,\n+    \"created_at\": \"2019-05-20T14:38:42Z\",\n+    \"updated_at\": \"2019-05-20T14:38:42Z\",\n+    \"closed_at\": null,\n+    \"author_association\": \"OWNER\",\n+    \"body\": \"docs\"\n+  },\n+  \"repository\": {\n+    \"id\": 187609638,\n+    \"node_id\": \"MDEwOlJlcG9zaXRvcnkxODc2MDk2Mzg=\",\n+    \"name\": \"fish-footman\",\n+    \"full_name\": \"LeonFedotov/fish-footman\",\n+    \"private\": true,\n+    \"owner\": {\n+      \"login\": \"LeonFedotov\",\n+      \"id\": 130342,\n+      \"node_id\": \"MDQ6VXNlcjEzMDM0Mg==\",\n+      \"avatar_url\": \"https://avatars3.githubusercontent.com/u/130342?v=4\",\n+      \"gravatar_id\": \"\",\n+      \"url\": \"https://api.github.com/users/LeonFedotov\",\n+      \"html_url\": \"https://github.com/LeonFedotov\",\n+      \"followers_url\": \"https://api.github.com/users/LeonFedotov/followers\",\n+      \"following_url\": \"https://api.github.com/users/LeonFedotov/following{/other_user}\",\n+      \"gists_url\": \"https://api.github.com/users/LeonFedotov/gists{/gist_id}\",\n+      \"starred_url\": \"https://api.github.com/users/LeonFedotov/starred{/owner}{/repo}\",\n+      \"subscriptions_url\": \"https://api.github.com/users/LeonFedotov/subscriptions\",\n+      \"organizations_url\": \"https://api.github.com/users/LeonFedotov/orgs\",\n+      \"repos_url\": \"https://api.github.com/users/LeonFedotov/repos\",\n+      \"events_url\": \"https://api.github.com/users/LeonFedotov/events{/privacy}\",\n+      \"received_events_url\": \"https://api.github.com/users/LeonFedotov/received_events\",\n+      \"type\": \"User\",\n+      \"site_admin\": false\n+    },\n+    \"html_url\": \"https://github.com/LeonFedotov/fish-footman\",\n+    \"description\": null,\n+    \"fork\": false,\n+    \"url\": \"https://api.github.com/repos/LeonFedotov/fish-footman\",\n+    \"forks_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/forks\",\n+    \"keys_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/keys{/key_id}\",\n+    \"collaborators_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/collaborators{/collaborator}\",\n+    \"teams_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/teams\",\n+    \"hooks_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/hooks\",\n+    \"issue_events_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues/events{/number}\",\n+    \"events_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/events\",\n+    \"assignees_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/assignees{/user}\",\n+    \"branches_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/branches{/branch}\",\n+    \"tags_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/tags\",\n+    \"blobs_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/git/blobs{/sha}\",\n+    \"git_tags_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/git/tags{/sha}\",\n+    \"git_refs_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/git/refs{/sha}\",\n+    \"trees_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/git/trees{/sha}\",\n+    \"statuses_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/statuses/{sha}\",\n+    \"languages_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/languages\",\n+    \"stargazers_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/stargazers\",\n+    \"contributors_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/contributors\",\n+    \"subscribers_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/subscribers\",\n+    \"subscription_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/subscription\",\n+    \"commits_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/commits{/sha}\",\n+    \"git_commits_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/git/commits{/sha}\",\n+    \"comments_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/comments{/number}\",\n+    \"issue_comment_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues/comments{/number}\",\n+    \"contents_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/contents/{+path}\",\n+    \"compare_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/compare/{base}...{head}\",\n+    \"merges_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/merges\",\n+    \"archive_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/{archive_format}{/ref}\",\n+    \"downloads_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/downloads\",\n+    \"issues_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues{/number}\",\n+    \"pulls_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/pulls{/number}\",\n+    \"milestones_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/milestones{/number}\",\n+    \"notifications_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/notifications{?since,all,participating}\",\n+    \"labels_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/labels{/name}\",\n+    \"releases_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/releases{/id}\",\n+    \"deployments_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/deployments\",\n+    \"created_at\": \"2019-05-20T09:27:39Z\",\n+    \"updated_at\": \"2019-05-20T14:09:56Z\",\n+    \"pushed_at\": \"2019-05-20T14:27:22Z\",\n+    \"git_url\": \"git://github.com/LeonFedotov/fish-footman.git\",\n+    \"ssh_url\": \"git@github.com:LeonFedotov/fish-footman.git\",\n+    \"clone_url\": \"https://github.com/LeonFedotov/fish-footman.git\",\n+    \"svn_url\": \"https://github.com/LeonFedotov/fish-footman\",\n+    \"homepage\": null,\n+    \"size\": 153,\n+    \"stargazers_count\": 0,\n+    \"watchers_count\": 0,\n+    \"language\": \"JavaScript\",\n+    \"has_issues\": true,\n+    \"has_projects\": true,\n+    \"has_downloads\": true,\n+    \"has_wiki\": true,\n+    \"has_pages\": true,\n+    \"forks_count\": 0,\n+    \"mirror_url\": null,\n+    \"archived\": false,\n+    \"disabled\": false,\n+    \"open_issues_count\": 1,\n+    \"license\": null,\n+    \"forks\": 0,\n+    \"open_issues\": 1,\n+    \"watchers\": 0,\n+    \"default_branch\": \"master\"\n+  },\n+  \"sender\": {\n+    \"login\": \"LeonFedotov\",\n+    \"id\": 130342,\n+    \"node_id\": \"MDQ6VXNlcjEzMDM0Mg==\",\n+    \"avatar_url\": \"https://avatars3.githubusercontent.com/u/130342?v=4\",\n+    \"gravatar_id\": \"\",\n+    \"url\": \"https://api.github.com/users/LeonFedotov\",\n+    \"html_url\": \"https://github.com/LeonFedotov\",\n+    \"followers_url\": \"https://api.github.com/users/LeonFedotov/followers\",\n+    \"following_url\": \"https://api.github.com/users/LeonFedotov/following{/other_user}\",\n+    \"gists_url\": \"https://api.github.com/users/LeonFedotov/gists{/gist_id}\",\n+    \"starred_url\": \"https://api.github.com/users/LeonFedotov/starred{/owner}{/repo}\",\n+    \"subscriptions_url\": \"https://api.github.com/users/LeonFedotov/subscriptions\",\n+    \"organizations_url\": \"https://api.github.com/users/LeonFedotov/orgs\",\n+    \"repos_url\": \"https://api.github.com/users/LeonFedotov/repos\",\n+    \"events_url\": \"https://api.github.com/users/LeonFedotov/events{/privacy}\",\n+    \"received_events_url\": \"https://api.github.com/users/LeonFedotov/received_events\",\n+    \"type\": \"User\",\n+    \"site_admin\": false\n+  },\n+  \"installation\": {\n+    \"id\": 1006543,\n+    \"node_id\": \"MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uMTAwNjU0Mw==\"\n+  }\n+}"
-  },
-  {
-    "sha": "0967ef424bce6791893e9a57bb952f80fd536e93",
-    "filename": "test/fixtures/fishy-issue-edited.json",
-    "status": "added",
-    "additions": 1,
-    "deletions": 0,
-    "changes": 1,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-issue-edited.json",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-issue-edited.json",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/test/fixtures/fishy-issue-edited.json?ref=a7c2e132b30d225509f71123f3bc26a3d1754fae",
-    "patch": "@@ -0,0 +1 @@\n+{}"
-  },
-  {
-    "sha": "e14071887af75f8c27802cfbf4feeb28d96a9c17",
-    "filename": "test/fixtures/fishy-issues-list.json",
-    "status": "added",
-    "additions": 67,
-    "deletions": 0,
-    "changes": 67,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-issues-list.json",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-issues-list.json",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/test/fixtures/fishy-issues-list.json?ref=a7c2e132b30d225509f71123f3bc26a3d1754fae",
-    "patch": "@@ -0,0 +1,67 @@\n+[\n+  {\n+    \"url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues/9\",\n+    \"repository_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman\",\n+    \"labels_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues/9/labels{/name}\",\n+    \"comments_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues/9/comments\",\n+    \"events_url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues/9/events\",\n+    \"html_url\": \"https://github.com/LeonFedotov/fish-footman/issues/9\",\n+    \"id\": 446154008,\n+    \"node_id\": \"MDU6SXNzdWU0NDYxNTQwMDg=\",\n+    \"number\": 9,\n+    \"title\": \"Restrict commits to docs\",\n+    \"user\": {\n+      \"login\": \"LeonFedotov\",\n+      \"id\": 130342,\n+      \"node_id\": \"MDQ6VXNlcjEzMDM0Mg==\",\n+      \"avatar_url\": \"https://avatars3.githubusercontent.com/u/130342?v=4\",\n+      \"gravatar_id\": \"\",\n+      \"url\": \"https://api.github.com/users/LeonFedotov\",\n+      \"html_url\": \"https://github.com/LeonFedotov\",\n+      \"followers_url\": \"https://api.github.com/users/LeonFedotov/followers\",\n+      \"following_url\": \"https://api.github.com/users/LeonFedotov/following{/other_user}\",\n+      \"gists_url\": \"https://api.github.com/users/LeonFedotov/gists{/gist_id}\",\n+      \"starred_url\": \"https://api.github.com/users/LeonFedotov/starred{/owner}{/repo}\",\n+      \"subscriptions_url\": \"https://api.github.com/users/LeonFedotov/subscriptions\",\n+      \"organizations_url\": \"https://api.github.com/users/LeonFedotov/orgs\",\n+      \"repos_url\": \"https://api.github.com/users/LeonFedotov/repos\",\n+      \"events_url\": \"https://api.github.com/users/LeonFedotov/events{/privacy}\",\n+      \"received_events_url\": \"https://api.github.com/users/LeonFedotov/received_events\",\n+      \"type\": \"User\",\n+      \"site_admin\": false\n+    },\n+    \"labels\": [\n+      {\n+        \"id\": 1369143763,\n+        \"node_id\": \"MDU6TGFiZWwxMzY5MTQzNzYz\",\n+        \"url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/labels/Fishy\",\n+        \"name\": \"Fishy\",\n+        \"color\": \"8edb5e\",\n+        \"default\": false\n+      }\n+    ],\n+    \"state\": \"open\",\n+    \"locked\": false,\n+    \"assignee\": null,\n+    \"assignees\": [],\n+    \"milestone\": null,\n+    \"comments\": 0,\n+    \"created_at\": \"2019-05-20T14:38:42Z\",\n+    \"updated_at\": \"2019-05-20T14:57:13Z\",\n+    \"closed_at\": null,\n+    \"author_association\": \"OWNER\",\n+    \"body\": \"docs\",\n+    \"reactions\": {\n+      \"url\": \"https://api.github.com/repos/LeonFedotov/fish-footman/issues/9/reactions\",\n+      \"total_count\": 0,\n+      \"+1\": 0,\n+      \"-1\": 0,\n+      \"laugh\": 0,\n+      \"hooray\": 0,\n+      \"confused\": 0,\n+      \"heart\": 0,\n+      \"rocket\": 0,\n+      \"eyes\": 0\n+    }\n+  }\n+]"
-  },
-  {
-    "sha": "0967ef424bce6791893e9a57bb952f80fd536e93",
-    "filename": "test/fixtures/fishy-pr-files.json",
-    "status": "added",
-    "additions": 1,
-    "deletions": 0,
-    "changes": 1,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-pr-files.json",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-pr-files.json",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/test/fixtures/fishy-pr-files.json?ref=a7c2e132b30d225509f71123f3bc26a3d1754fae",
-    "patch": "@@ -0,0 +1 @@\n+{}"
-  },
-  {
-    "sha": "0967ef424bce6791893e9a57bb952f80fd536e93",
-    "filename": "test/fixtures/fishy-pr.json",
-    "status": "added",
-    "additions": 1,
-    "deletions": 0,
-    "changes": 1,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-pr.json",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/fishy-pr.json",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/test/fixtures/fishy-pr.json?ref=a7c2e132b30d225509f71123f3bc26a3d1754fae",
-    "patch": "@@ -0,0 +1 @@\n+{}"
-  },
-  {
-    "sha": "dfd976c65e5372e79b41f500bccdd2bbebb6ac9a",
-    "filename": "test/fixtures/issues.opened.json",
-    "status": "removed",
-    "additions": 0,
-    "deletions": 15,
-    "changes": 15,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/f86ec76c89d60eeb9e1575072883f86c2fb1a620/test/fixtures/issues.opened.json",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/f86ec76c89d60eeb9e1575072883f86c2fb1a620/test/fixtures/issues.opened.json",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/test/fixtures/issues.opened.json?ref=f86ec76c89d60eeb9e1575072883f86c2fb1a620",
-    "patch": "@@ -1,15 +0,0 @@\n-{\n-  \"action\": \"opened\",\n-  \"issue\": {\n-    \"number\": 1,\n-    \"user\": {\n-      \"login\": \"hiimbex\"\n-    }\n-  },\n-  \"repository\": {\n-    \"name\": \"testing-things\",\n-    \"owner\": {\n-      \"login\": \"hiimbex\"\n-    }\n-  }\n-}"
-  },
-  {
-    "sha": "0967ef424bce6791893e9a57bb952f80fd536e93",
-    "filename": "test/fixtures/no-longer-fishy-pr.json",
-    "status": "added",
-    "additions": 1,
-    "deletions": 0,
-    "changes": 1,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/no-longer-fishy-pr.json",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/fixtures/no-longer-fishy-pr.json",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/test/fixtures/no-longer-fishy-pr.json?ref=a7c2e132b30d225509f71123f3bc26a3d1754fae",
-    "patch": "@@ -0,0 +1 @@\n+{}"
-  },
-  {
-    "sha": "0b5fe91dc52b6652a1c1fa2e820780d101b53911",
-    "filename": "test/index.test.js",
-    "status": "modified",
-    "additions": 68,
-    "deletions": 26,
-    "changes": 94,
-    "blob_url": "https://github.com/LeonFedotov/fish-footman/blob/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/index.test.js",
-    "raw_url": "https://github.com/LeonFedotov/fish-footman/raw/a7c2e132b30d225509f71123f3bc26a3d1754fae/test/index.test.js",
-    "contents_url": "https://api.github.com/repos/LeonFedotov/fish-footman/contents/test/index.test.js?ref=a7c2e132b30d225509f71123f3bc26a3d1754fae",
-    "patch": "@@ -1,46 +1,88 @@\n const nock = require('nock')\n-// Requiring our app implementation\n const myProbotApp = require('..')\n const { Probot } = require('probot')\n-// Requiring our fixtures\n-const payload = require('./fixtures/issues.opened')\n-const issueCreatedBody = { body: 'Thanks for opening this issue!' }\n+\n+const fixtures = {\n+  issueCreated: require('./fixtures/fishy-issue-created'),\n+  issueEdited: require('./fixtures/fishy-issue-edited'),\n+  issueClosed: require('./fixtures/fishy-issue-closed'),\n+  prCreated: require('./fixtures/fishy-pr'),\n+  prFiles: require('./fixtures/fishy-pr-files'),\n+  prUpdated: require('./fixtures/no-longer-fishy-pr'),\n+  fishyIssues: require('./fixtures/fishy-issues-list')\n+  openPrs: require('./fixtures/open-prs-list')\n+}\n \n nock.disableNetConnect()\n \n-describe('My Probot app', () => {\n+describe('fish footman', () => {\n   let probot\n \n   beforeEach(() => {\n     probot = new Probot({})\n-    // Load our app into probot\n     const app = probot.load(myProbotApp)\n-\n-    // just return a test token\n     app.app = () => 'test'\n-  })\n-\n-  test('creates a comment when an issue is opened', async () => {\n-    // Test that we correctly return a test token\n     nock('https://api.github.com')\n-      .post('/app/installations/2/access_tokens')\n+      .post('/app/installations/1006543/access_tokens')\n       .reply(200, { token: 'test' })\n+  })\n \n-    // Test that a comment is posted\n+  test('when a fishy issue is created prs that touch fishy paths with be blocked', async () => {\n+    nock('https://api.github.com')\n+      .get('/repos/LeonFedotov/fish-footman/issues?state=open&labels=Fishy')\n+      .reply(200, fixtures.fishyIssues)\n     nock('https://api.github.com')\n-      .post('/repos/hiimbex/testing-things/issues/1/comments', (body) => {\n-        expect(body).toMatchObject(issueCreatedBody)\n-        return true\n-      })\n-      .reply(200)\n-\n-    // Receive a webhook event\n-    await probot.receive({ name: 'issues', payload })\n+      .get('/repos/LeonFedotov/fish-footman/pulls?state=open')\n+      .reply(200, fixtures.openPrs)\n+    await probot.receive({ name: 'issues', payload: fixtures.issueCreated })\n+  })\n+\n+  xtest('when a pr is created with restricted paths bot will block it', async () => {\n+\n+    await probot.receive({ name: 'pull_request', payload: fixtures.prCreated })\n+  })\n+\n+  xtest('when a pr is changed to not touch restricted paths pr is unlocked', async () => {\n+\n+    await probot.receive({ name: 'pull_request', payload: fixtures.prUpdated })\n+  })\n+\n+  xtest('when a fishy issue is closed affected prs are unlocked', async () => {\n+\n+    await probot.receive({ name: 'issues', payload: fixtures.issueClosed })\n+  })\n+\n+  xtest('when a fishy issue is edited affected prs are updated', async () => {\n+\n+    await probot.receive({ name: 'issues', payload: fixtures.issueEdited })\n   })\n })\n \n-// For more information about testing with Jest see:\n-// https://facebook.github.io/jest/\n+// describe('Fish footman', () => {\n+//   let probot\n+\n+//   beforeEach(() => {\n+//     probot = new Probot({})\n+//     const app = probot.load(myProbotApp)\n+//     app.app = () => 'test'\n+//   })\n+\n+//   test('creates a comment when an issue is opened', async () => {\n+//     // Test that we correctly return a test token\n+//     nock('https://api.github.com')\n+//       .post('/app/installations/2/access_tokens')\n+//       .reply(200, { token: 'test' })\n+\n+//     // Test that a comment is posted\n+//     nock('https://api.github.com')\n+//       .post('/repos/hiimbex/testing-things/issues/1/comments', (body) => {\n+//         expect(body).toMatchObject(issueCreatedBody)\n+//         return true\n+//       })\n+//       .reply(200)\n+\n+//     // Receive a webhook event\n+//     await probot.receive({ name: 'issues', payload })\n+//   })\n+// })\n \n-// For more information about testing with Nock see:\n-// https://github.com/nock/nock"
+{
+  "data": {
+    "repository": {
+      "result": {
+        "pageInfo": {
+          "endCursor": "Y3Vyc29yOnYyOpHOEL2Jfw==",
+          "hasNextPage": false
+        },
+        "nodes": [
+          {
+            "sha": "e4e337875aef068f4f3cbe8f1831fcb1781b8c6b",
+            "number": 22,
+            "files": {
+              "pageInfo": {
+                "endCursor": "MQ",
+                "hasNextPage": false
+              },
+              "nodes": [
+                {
+                  "path": "test/index.html"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
   }
-]
-
+}
