@@ -49,8 +49,7 @@ module.exports = {
       .compact()
       .map((dir) => path.normalize(dir))
       .value()
-    )
-  ,
+    ),
 
   pullrequests: async function * pullrequests (context) {
     let nextPage = true

@@ -1,7 +1,3 @@
-const _ = require('lodash')
-const path = require('path')
-
-const { labelName } = require('./config')
 const { createStatus, restrictedDirs, pullrequests } = require('./lib')
 
 module.exports = async (context) => {
