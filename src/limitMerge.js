@@ -3,10 +3,10 @@ const validatePr = async (context, pr, restrictions) => {
   await createStatus(context, pr.sha, 'pending')
   for await (const file of pr.files) {
     if (restrictions.some((dir) => file.startsWith(dir))) {
-      return await createStatus(context, pr.sha, 'failure')
+      return createStatus(context, pr.sha, 'failure')
     }
   }
-  return await createStatus(context, pr.sha, 'success')
+  return createStatus(context, pr.sha, 'success')
 }
 
 module.exports = async (context) => {

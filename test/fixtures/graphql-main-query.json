@@ -21,7 +21,7 @@
         },
         "nodes": [
           {
-            "changedFiles": 1,
+            "changedFiles": 2,
             "state": "OPEN",
             "files": {
               "pageInfo": {
@@ -32,6 +32,11 @@
                 {
                   "node": {
                     "path": "docs/index.html"
+                  }
+                },
+                {
+                  "node": {
+                    "path": "docsv2/index.html"
                   }
                 }
               ]
