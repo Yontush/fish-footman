@@ -17,10 +17,7 @@
               },
               "nodes": [
                 {
-                  "path": "test/index.html"
-                },
-                {
-                  "path": "docsv2/index.html"
+                  "path": "docs/index.html"
                 }
               ]
             }

@@ -1,0 +1,13 @@
+{
+  "data": {
+    "repository": {
+      "result": {
+        "pageInfo": {
+          "endCursor": "Y3Vyc29yOnYyOpHOGqBEtQ==",
+          "hasNextPage": false
+        },
+        "nodes": []
+      }
+    }
+  }
+}
