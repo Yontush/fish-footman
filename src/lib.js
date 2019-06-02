@@ -20,7 +20,7 @@ async function * filesPage (context, number, { pageInfo: { hasNextPage: nextPage
   while (nextPage) {
     const { hasNextPage, endCursor, nodes } = await context.github
       .graphql(getFiles, context.repo({ number, cursor }))
-      .then(({ repository: { result: { nodes, pageInfo: { hasNextPage, endCursor } } } }) => ({ hasNextPage, endCursor, nodes }))
+      .then(({ repository: { pullRequest: { result: { nodes, pageInfo: { hasNextPage, endCursor } } } } }) => ({ hasNextPage, endCursor, nodes }))
     nextPage = hasNextPage
     cursor = endCursor
     yield * nodes.map(({ path }) => path)
